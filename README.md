@@ -21,6 +21,7 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 -------------------------------------------------------------------------------------------------------------------------------
 
 Welcome to LogOS Beta
+====
 
 All files(inside "LogOS Files") are requeried to the system work, also, running the installer would be advised so it configures the config file and set the password and basic dependencies
 A new beta version installer will be released as soon as possible.
