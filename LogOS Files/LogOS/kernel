@@ -119,11 +119,6 @@ getTaco = function()
 		sleep(2)
 	end
 end
-
-getCurrentVer = function()
-	return "1.2.1"
-end
-
 BSOD = function(error)
 	--bsod made by logsys..
 	--feel free to use in your programs and edit it, but keep my name in it
@@ -191,6 +186,6 @@ end
 
 --Normal use functions please!
 os.version = function()
-	return "LogOS V1.23"
+	return "LogOS V1.24 - Beta"
 end
 

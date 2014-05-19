@@ -75,30 +75,24 @@ else
 	--wait... it's down there
 end
 shell.run("logos/kernel")
-local lIDE = function()
+local runProg = function(program, ...)
 	x, y = term.getSize()
+	term.setCursorPos(1,7)
+	term.setBackgroundColor(colors.blue)
+	term.write("          ")
+	term.setCursorPos(1,7)
+	term.write(program)
 	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow1)
-	shell.run("LuaIDE")
+	shell.run(program, ...)
 	term.redirect(term.native())
 	nWindow1.setVisible(false)
 end
 local fb = function()
-	x, y = term.getSize()
-	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
-	term.redirect(nWindow1)
-	shell.run("LogOS/fileB")
-	term.redirect(term.native())
-	nWindow1.setVisible(false)
+	runProg("LogOS/fileB")
 end
 local darkchat = function()
-	x, y = term.getSize()
-	local nWindow2 = window.create(term.current(), 1,2,x,y-1, true)
-	term.redirect(nWindow2)
-	shell.run("LogOS/darkchat", user1, 10, "true")
-	term.redirect(term.native())
-	nWindow2.setVisible(false)
-	completeDraw()
+	runProg("LogOS/darkchat", user1, 10, "true")
 end
 
 local function main()
@@ -129,7 +123,7 @@ local function main()
 			
 				if xP <= 12 and xP >= 1 then
 					if yP == 2 then
-						lIDE()
+						runProg("LogOS/LuaIDE")
 						printed = false
 					elseif yP == 3 then
 						x, y = term.getSize()
@@ -146,9 +140,12 @@ local function main()
 						read1 = read()
 						term.setCursorBlink(false)
 						--if fs.exists(read1) then
-							term.clear()
-							term.setCursorPos(1,1)
-							shell.run(read1)
+						term.clear()
+						term.setCursorPos(1,1)
+						term.redirect(term.native())
+						nWindow4.setVisible = false
+						printed = false
+						runProg(read1)
 							
 						--else
 							--BSOD("Program not found!")
