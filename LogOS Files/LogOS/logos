@@ -1,0 +1,234 @@
+--loading values
+runn = {}
+--convertion
+MB = 1024
+B = 8
+--functions
+
+function rightClick(xP, yP)
+	term.setBackgroundColor(colors.lightGray)
+	term.setCursorPos(xP, yP)
+	term.write("Access Shell")
+	event, button, xPos, yPos = oldOsPullEvent("mouse_click")
+	if button == 1 then
+		if xPos >= xP and xPos <= xP+11 and yPos == yP then
+			x, y = term.getSize()
+			local nWindow3 = window.create(term.current(), 1,2,x,y-1, true)
+			term.redirect(nWindow3)
+			
+			shell.run("shell")
+			term.redirect(term.native())
+			nWindow3.setVisible(false)
+			completeDraw()
+		end
+	else
+		completeDraw()
+	end
+end
+
+os.loadAPI("LogOS/strutils")
+os.loadAPI("LogOS/SHA256util")
+--os.loadAPI("cAPI")
+term.clear()
+term.setBackgroundColor(colors.lightBlue)
+term.setTextColor(1)
+term.setCursorPos(1,1)
+term.clear()
+settingsH = fs.open("LogOS/cfg.ini", "r")
+user1 = settingsH.readLine()
+pass1 = settingsH.readLine()
+passOnLogon = settingsH.readLine()
+tacoI = settingsH.readLine()
+settingsH.close()
+term.setCursorPos(1,1)
+print(os.version())
+if passOnLogon == "yes" then
+	os.pullEvent = os.pullEventRaw
+	term.setCursorPos(2,5)
+	print("Username:")
+	term.setCursorPos(2,7)
+	print("Password:")
+	term.setCursorPos(2,6)
+	term.setBackgroundColor(colors.blue)
+	write("                    ")
+	term.setCursorPos(2,8)
+	write("                    ")
+	term.setCursorPos(2,6)
+	local user = read()
+	term.setCursorPos(2,8)
+	local pass = read("*")
+	pass = SHA256util.sha256(pass)
+
+	
+	
+	if user1 == user then
+		if pass1 ~= pass then
+			BSOD("Password Mismatch")
+		else
+			--wait
+
+		end
+	else
+		BSOD("Username Mismatch")
+	end
+else
+	--wait... it's down there
+end
+shell.run("logos/kernel")
+local lIDE = function()
+	x, y = term.getSize()
+	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
+	term.redirect(nWindow1)
+	shell.run("LuaIDE")
+	term.redirect(term.native())
+	nWindow1.setVisible(false)
+end
+local fb = function()
+	x, y = term.getSize()
+	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
+	term.redirect(nWindow1)
+	shell.run("LogOS/fileB")
+	term.redirect(term.native())
+	nWindow1.setVisible(false)
+end
+local darkchat = function()
+	x, y = term.getSize()
+	local nWindow2 = window.create(term.current(), 1,2,x,y-1, true)
+	term.redirect(nWindow2)
+	shell.run("LogOS/darkchat", user1, 10, "true")
+	term.redirect(term.native())
+	nWindow2.setVisible(false)
+	completeDraw()
+end
+
+local function main()
+	completeDraw()
+	printed = false
+	term.setCursorBlink(false)
+	while true do
+
+		local event, button, xP, yP = oldOsPullEvent("mouse_click")
+		
+		if button == 1 then
+			if printed == false then
+				if xP >= 1 and xP <= 6 and yP == 1 then
+
+					term.setCursorPos(1,2)
+					term.setBackgroundColor(colors.lightGray)
+					print("Text Editor ")
+					print("Run Program ")
+					print("Chat        ")
+					print("File Browser")
+					print("Shutdown    ")
+					print("Restart     ")
+					print("------------")
+					print("About       ")
+					printed = true
+				end
+			else
+			
+				if xP <= 12 and xP >= 1 then
+					if yP == 2 then
+						lIDE()
+						printed = false
+					elseif yP == 3 then
+						x, y = term.getSize()
+						local nWindow4 = window.create(term.current(),1,2,x,y-1)
+						term.redirect(nWindow4)
+						term.clear()
+						term.setBackgroundColor(colors.lightBlue)
+						term.setTextColor(colors.yellow)
+						term.clear()
+						term.setCursorPos(1,1)
+						print("Run Program:")
+						write(" ")
+						term.setCursorBlink(true)
+						read1 = read()
+						term.setCursorBlink(false)
+						--if fs.exists(read1) then
+							term.clear()
+							term.setCursorPos(1,1)
+							shell.run(read1)
+							
+						--else
+							--BSOD("Program not found!")
+						--end
+						term.redirect(term.native())
+						nWindow4.setVisible = false
+						printed = false
+					elseif yP == 4 then
+						darkchat()
+						printed = false
+						completeDraw()
+					elseif yP == 5 then
+						fb()
+						printed = false
+						completeDraw()
+					elseif yP == 6 then
+						
+						
+						term.setBackgroundColor(colors.gray)
+						term.setTextColor(colors.yellow)
+						term.clear()
+						term.setCursorPos(1,3)
+						print("Unloading APIs...")
+						sleep(0.5)
+						print("Shutting down..")
+						print("")
+						print("Thanks for using LogOS by Logsys")
+						sleep(2)
+						os.shutdown()
+					elseif yP == 7 then
+						
+						
+						term.setBackgroundColor(colors.gray)
+						term.setTextColor(colors.yellow)
+						term.clear()
+						term.setCursorPos(1,3)
+						print("Unloading APIs...")
+						sleep(0.5)
+						print("Rebooting..")
+						print("")
+						print("Thanks for using LogOS by Logsys")
+						sleep(2)
+						os.reboot()
+					elseif yP == 9 then
+						term.clear()
+						term.setBackgroundColor(colors.gray)
+						term.setTextColor(colors.white)
+						term.clear()
+						term.setCursorPos(1,1)
+						print(os.version())
+						print("")
+						print("Disk Space:")
+						print("  Free Space: " .. string.sub(fs.getFreeSpace("/")/1024/1024,1,5) .. "MB    Total Space: 1 MB")
+						print("")
+						print("")
+						print("OS is opening to community development!")
+						print("Credits: tomass1996 - For his incredibly useful hash API(String Utils API)")
+						print("         GravityScore - For his SHA256 Algorithim calculator")
+						print("         Darkrising - For darkchat used in the OS")
+						print("Press Space to continue...")
+						os.pullEvent("char" or "mouse_click")
+						printed = false
+						completeDraw()
+					else
+						printed = false
+						completeDraw()
+					end
+
+				end
+				printed = false
+				completeDraw()
+			end
+		else
+			rightClick(xP,yP)
+		end
+	end
+end
+--ok, it's here
+
+local ok, err = pcall(main)
+if not ok then
+	BSOD(err)
+end

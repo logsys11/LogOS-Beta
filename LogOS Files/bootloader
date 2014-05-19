@@ -1,0 +1,98 @@
+--BootLoader
+--Made by Logsys for LogOS
+--[[
+Copyright (C) 2014 João Pacheco a.k.a logsys [transpois0n@me.com]
+
+Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+associated documentation files (the "Software"), to deal in the Software without restriction,
+including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense,
+copies of the Software, and to permit persons to whom the Software is furnished to do so,
+subject to the following conditions:
+
+-The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-Visible credit is given to the original author.
+-The software is distributed in a non-profit way.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR
+COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+--]]
+
+--All rights reserved
+--Loading Values
+loading = true
+
+--Functions
+
+local backgd = function()
+	img1 = paintutils.loadImage(".bootloader")
+	paintutils.drawImage(img1, 5, 1)
+end
+
+
+
+local wheelSpin = function()
+	term.setCursorPos(10,7)
+	local spin = {}
+	spin[1] = "/"
+	spin[2] = "-"
+	spin[3] = "\\"
+	spin[4] = "|"
+	z = 0
+	while loading do
+		
+		for i = 1,4 do
+			term.setCursorPos(26,16)
+			term.write(spin[i])
+			sleep(0.01)
+		end
+		z = z+1
+		if z == 10 then
+			loading = false
+		end
+	end
+	return "1"
+end
+
+local load = function(sVerbose)
+	if sVerbose then print("Loading Kernel") end
+	sleep(1.2)
+	shell.run("LogOS/kernel")
+	if sVerbose then print("Loading Drivers") end
+	--loadDriver()
+	sleep(0.2)
+if sVerbose then sleep(4) end
+	loading = false
+	--shell.run("LogOS/.logos")
+	shell.run("LogOS/logos")
+end
+
+local runAll = function()
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.gray)
+	term.clear()
+	backgd()
+	parallel.waitForAll(wheelSpin(),load())
+	
+end
+
+--Function running area and non-function scripts
+term.clear()
+term.setCursorPos(1,1)
+term.write("Press V to boot in verbose mode")
+os.startTimer(1.5)
+event, key = os.pullEvent()
+if event == "char" or event == "key" then
+	if key == "v" or key == "V" or key == 47 then
+		term.setBackgroundColor(colors.gray)
+		term.setTextColor(colors.white)
+		term.clear()
+		term.setCursorPos(1,1)
+		load(true)
+	else
+		runAll()
+	end
+else
+	runAll()
+end

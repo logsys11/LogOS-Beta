@@ -1,0 +1,196 @@
+--Kernel V.1.0.0.12
+--Initial Release
+--Use with LogOS only!
+--Copyright (C) 2014 João Pacheco a.k.a. logsys
+
+--Semi-Sandbox
+rootDirectory = "/userFiles/"
+rootDirectoryN = "/userFiles"
+old_fsOpen = _G["fs"]["open"]
+_G["fs"]["open"] = function(path, mode, _req)
+	req = _req or nil
+	if req == nil then
+		if string.sub(path,1,1) == "/" then
+			return old_fsOpen(rootDirectoryN .. path, mode)
+		else
+        	return old_fsOpen(rootDirectory .. path, mode)
+        end
+    elseif req == "system" then
+    	--bypass sandbox
+    	return old_fsOpen(path,mode)
+    else
+    	print("Invalid req")
+    	return nil, "Invalid Req"
+    end
+end
+
+old_fsList = _G["fs"]["list"]
+_G["fs"]["list"] = function(sPath, _req)
+	req = _req or nil
+	if _req == nil then
+		if string.sub(path, 1,1) == "/" then
+			return old_fsList(rootDirectoryN .. path)
+		else
+			return old_fsList(rootDirectory .. path)
+		end
+	else
+		return old_fsList(path)
+	end
+end
+_G["fs"]["list"] = old_fsList
+_G["fs"]["open"] = old_fsOpen
+--------------------------------
+oldOsPullEvent = os.pullEvent
+os.pullEvent = function( _sFilter )
+	if _sFilter == "mouse_click" then
+		local event, button,x ,y = oldOsPullEvent( _sFilter )
+		if event == "mouse_click" then
+			y = y - 1
+			return event, button, x, y
+		end
+	else
+		local event, a1, a2, a3, a4 , a5, a6 = oldOsPullEvent( _sFilter )
+		if event == "mouse_click" then
+			a3 = a3 - 1
+			return event, a1, a2, a3, a4, a5, a6
+		else
+			return event, a1, a2, a3, a4, a5, a6
+		end
+	end
+end
+loadfile = function( _sFile )
+    local file = fs.open( _sFile, "r", "system" )
+    if file then
+        local func, err = loadstring( file.readAll(), fs.getName( _sFile ) )
+        file.close()
+        return func, err
+    end
+    return nil, "File not found"
+end
+
+dofile = function( _sFile )
+    local fnFile, e = loadfile( _sFile )
+    if fnFile then
+        setfenv( fnFile, getfenv(2) )
+        return fnFile()
+    else
+        error( e, 2 )
+    end
+end
+
+function drawBar()
+	term.setTextColor(colors.yellow)
+	term.setBackgroundColor(colors.cyan)
+	
+	term.setCursorPos(1,1)
+	term.write("[Menu]                                                                     ")
+end
+
+function drawBackground()
+	img1 = paintutils.loadImage("LogOS/.background")
+	paintutils.drawImage(img1, 1,2)
+end
+
+function completeDraw()
+	term.setBackgroundColor(colors.white)
+	term.clear()
+	drawBar()
+	drawBackground()
+end
+
+getTaco = function()
+	term.setBackgroundColor(colors.gray)
+	term.setTextColor(colors.white)
+	term.clear()
+	term.setCursorPos(1,1)
+	print("LuaIDE is not available by default due to copyright, but we can download it for you. Y/N?")
+	t1 = read()
+	if t1 == "y" or t1 == "Y" then
+		shell.run("pastebin",  "get", "vyAZc6tJ", "LuaIDE")
+		settingsH = fs.open("LogOS/cfg.ini", "w")
+		settingsH.writeLine(user1)
+		settingsH.writeLine(pass1)
+		settingsH.writeLine(passOnLogon)
+		settingsH.writeLine("yes")
+		settingsH.close()
+		tacoI = "yes"
+	else
+		print("Aborted...")
+		sleep(2)
+	end
+end
+
+getCurrentVer = function()
+	return "1.2.1"
+end
+
+BSOD = function(error)
+	--bsod made by logsys..
+	--feel free to use in your programs and edit it, but keep my name in it
+	term.setBackgroundColor(colors.blue)
+	term.setTextColor(colors.white)
+	term.clear()
+	term.setCursorPos(1,1)
+	print("An error has occurred and the computer has to shutdown.")
+	print("")
+	print("The error is:")
+	print(error)
+	print("")
+	print("If you modified this program, revert it to the default program")
+	print("")
+	print("")
+	print("")
+	print("Memory dump progress: 100%")
+	sleep(5)
+	os.reboot()
+end
+
+upToDate = function(link)
+	if http then
+		local getVer = http.get(link)
+		if getVer then
+			local getverCont = getVer.readAll()
+			getVer.close()
+			local getverCont = textutils.unserialize(getverCont)
+			if getverCont["version"] > getCurrentVer() then
+				return false
+			else
+				return true
+			end
+		end
+	else
+		return true
+	end
+end
+
+loadDriver = function()
+	for k,v in pairs(rs.getSides()) do
+		if peripheral.isPresent(v) then
+			if peripheral.getType(v) == "monitor" then
+				monitor = {}
+				monitor["sSide"] = k
+			elseif peripheral.getType(v) == "modem" then
+				modem = {}
+				modem["sSide"] = k
+			elseif peripheral.getType(v) == "drive" then
+				drive = {}
+				drive["sSide"] = k
+			elseif peripheral.getType(v) == "printer" then
+				printer = {}
+				printer["sSide"] = k
+			elseif peripheral.getType(v) == "turtle" then
+				turtle = {}
+				turtle["sSide"] = k
+			else
+				unknown = {}
+				unknown["sSide"] = k
+			end
+		end
+	end
+end
+
+--Normal use functions please!
+os.version = function()
+	return "LogOS V1.23"
+end
+

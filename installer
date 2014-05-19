@@ -1,0 +1,179 @@
+function BSOD(error)
+        --bsod made by logsys..
+        --feel free to use in your programs and edit it, but keep my name in it
+        term.setBackgroundColor(colors.blue)
+        term.setTextColor(colors.white)
+        term.clear()
+        term.setCursorPos(1,1)
+        print("An error has occurred and the computer has to shutdown.")
+        print("")
+        print("The error is:")
+        print(error)
+        print("")
+        print("If you modified this program, revert it to the default program")
+        print("")
+        print("")
+        print("")
+        print("Memory dump progress: 100%")
+        sleep(5)
+        os.reboot()
+end
+term.clear()
+term.setCursorPos(1,1)
+term.setTextColor(colors.yellow)
+term.write("LogOS Installer/////////////////////////////////////////////////////////")
+fs.makeDir("LogOS")
+print("")
+term.setTextColor(colors.white)
+print("Downloading Main File..")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/logos")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/logos", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download Main-File")
+end
+print("Downloading String Utils API")
+local download1 = http.get("https://raw.github.com/Xtansia/Lua-String-Utils-API/master/StrUtilsAPI.lua")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/strUtils", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download stringutils")
+end
+ 
+print("Downloading GravityScore's SHA-256")
+local download1 = http.get("http://pastebin.com/raw.php?i=YkCjzpSP")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/SHA256util", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download SHA-256 from GravityScore")
+end
+print("Downloading background")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/.background")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/.background", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download background")
+end
+print("Downloading bootloader background")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/.bootloader")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open(".bootloader", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download bootloader background")
+end
+print("Downloading bootloader")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/bootloader")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("bootloader", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download bootloader")
+end
+print("Downloading kernel")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/kernel")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/kernel", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download kernel")
+end
+ 
+ 
+ 
+ 
+ 
+print("Downloading DarkChat")
+local download1 = http.get("https://raw.github.com/darkrising/darkprograms/darkprograms/chat.lua")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/darkchat", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download DarkChat")
+end
+ 
+os.loadAPI("LogOS/strutils")
+os.loadAPI("LogOS/SHA256util")
+--os.loadAPI("cAPI")
+ 
+local file1 = fs.open("/LogOS/cfg", "w")
+file1.close()
+print("Creating config")
+write("Username: ")
+user = read()
+write("Password: ")
+pass = read("*")
+write("Password again: ")
+pass1 = read("*")
+if pass == pass1 then
+        pass = SHA256util.sha256(pass)
+        h = fs.open("LogOS/cfg.ini", "w")
+        h.writeLine(user)
+        h.writeLine(pass)
+       
+       
+ 
+ 
+else
+        fs.delete("logos")
+       
+        os.unloadAPI("strutils")
+        fs.delete("strutils")
+        os.unloadAPI("cAPI")
+        fs.delete("cAPI")
+        error("Password mismatch, run installer again")
+end
+--print("")
+--print("Completed")
+--print("Run logos-main to start")
+sleep(1)
+term.clear()
+term.setCursorPos(1, 1)
+term.write("LogOS Installer///////////////////////////////////////////////////////////////")
+print("")
+print("Ask for password on boot?(Y/N)")
+event, y = os.pullEvent("char")
+if y == "y" or y == "Y" then
+        h.writeLine("yes")
+else
+        h.writeLine("no")
+end
+h.writeLine("no")
+h.close()
+print("Run on boot? (Y/N)")
+event, response = os.pullEvent("char")
+if response == "y" or response == "Y" then
+        local h = fs.open("startup", "w")
+        h.writeLine("shell.run(\"bootloader\")")
+        h.close()
+end
+sleep(1)
+os.reboot()
