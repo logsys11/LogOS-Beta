@@ -1,31 +1,14 @@
-function BSOD(error)
-        --bsod made by logsys..
-        --feel free to use in your programs and edit it, but keep my name in it
-        term.setBackgroundColor(colors.blue)
-        term.setTextColor(colors.white)
-        term.clear()
-        term.setCursorPos(1,1)
-        print("An error has occurred and the computer has to shutdown.")
-        print("")
-        print("The error is:")
-        print(error)
-        print("")
-        print("If you modified this program, revert it to the default program")
-        print("")
-        print("")
-        print("")
-        print("Memory dump progress: 100%")
-        sleep(5)
-        os.reboot()
-end
+term.setBackgroundColor(colors.lightGray)
 term.clear()
-term.setCursorPos(1,1)
-term.setTextColor(colors.yellow)
-term.write("LogOS Installer/////////////////////////////////////////////////////////")
-fs.makeDir("LogOS")
-print("")
-term.setTextColor(colors.white)
-print("Downloading Main File..")
+term.setTextColor(colors.gray)
+term.setCursorPos(2,2)
+term.setCursorBlink(false)
+print("LogOS Installer -- File Download Mode")
+term.setCursorPos(2,4)
+print("Downloading files: ")
+term.setCursorPos(2,10)
+term.setBackgroundColor(colors.lightBlue)
+term.write("                                               ")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/logos")
 if download1 then
         local handle = download1.readAll()
@@ -36,7 +19,10 @@ if download1 then
 else
         error("Could not download Main-File")
 end
-print("Downloading String Utils API")
+term.setBackgroundColor(colors.blue)
+term.setCursorPos(2, 10)
+term.write("        ")
+--print("Downloading String Utils API")
 local download1 = http.get("https://raw.github.com/Xtansia/Lua-String-Utils-API/master/StrUtilsAPI.lua")
 if download1 then
         local handle = download1.readAll()
@@ -47,8 +33,8 @@ if download1 then
 else
         error("Could not download stringutils")
 end
- 
-print("Downloading GravityScore's SHA-256")
+term.write("     ")
+--print("Downloading GravityScore's SHA-256")
 local download1 = http.get("http://pastebin.com/raw.php?i=YkCjzpSP")
 if download1 then
         local handle = download1.readAll()
@@ -59,7 +45,8 @@ if download1 then
 else
         error("Could not download SHA-256 from GravityScore")
 end
-print("Downloading background")
+term.write("    ")
+--print("Downloading background")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/.background")
 if download1 then
         local handle = download1.readAll()
@@ -70,7 +57,8 @@ if download1 then
 else
         error("Could not download background")
 end
-print("Downloading bootloader background")
+term.write("    ")
+--print("Downloading bootloader background")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/.bootloader")
 if download1 then
         local handle = download1.readAll()
@@ -81,7 +69,44 @@ if download1 then
 else
         error("Could not download bootloader background")
 end
-print("Downloading bootloader")
+term.write("   ")
+--print("Downloading LuaIDE")
+local download1 = http.get("http://pastebin.com/raw.php?i=vyAZc6tJ")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/LuaIDE", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download LuaIDE")
+end
+term.write("  ")
+--print("Downloading File Browser")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/fileB")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/fileB", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download File Browser")
+end
+term.write(" ")
+--print("Downloading File Browser Background")
+local download1 = http.get("https://raw.githubusercontent.com/logsys11/LogOS/master/LogOS%20Files/LogOS/FB/fBk")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/FB/fBk", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download File Browser Background")
+end
+term.write(" ")
+--print("Downloading bootloader")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/bootloader")
 if download1 then
         local handle = download1.readAll()
@@ -92,7 +117,8 @@ if download1 then
 else
         error("Could not download bootloader")
 end
-print("Downloading kernel")
+--print("Downloading kernel")
+term.write("          ")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/kernel")
 if download1 then
         local handle = download1.readAll()
@@ -103,12 +129,8 @@ if download1 then
 else
         error("Could not download kernel")
 end
- 
- 
- 
- 
- 
-print("Downloading DarkChat")
+term.write("     ")
+--print("Downloading DarkChat")
 local download1 = http.get("https://raw.github.com/darkrising/darkprograms/darkprograms/chat.lua")
 if download1 then
         local handle = download1.readAll()
@@ -119,7 +141,19 @@ if download1 then
 else
         error("Could not download DarkChat")
 end
- 
+term.write("    ")
+term.setBackgroundColor(colors.lightGray)
+term.setCursorPos(2,15)
+print("Done! Passing to configuration mode...")
+sleep(1.25)
+--Configuration Mode!!
+term.setBackgroundColor(colors.lightGray)
+term.clear()
+term.setTextColor(colors.gray)
+term.setCursorPos(2,2)
+term.setCursorBlink(false)
+print("LogOS Installer -- Configuration Mode")
+term.setCursorPos(2,4)
 os.loadAPI("LogOS/strutils")
 os.loadAPI("LogOS/SHA256util")
 --os.loadAPI("cAPI")
@@ -127,39 +161,23 @@ os.loadAPI("LogOS/SHA256util")
 local file1 = fs.open("/LogOS/cfg", "w")
 file1.close()
 print("Creating config")
-write("Username: ")
+write(" Username: ")
 user = read()
-write("Password: ")
+write(" Password: ")
 pass = read("*")
-write("Password again: ")
+write(" Password again: ")
 pass1 = read("*")
 if pass == pass1 then
-        pass = SHA256util.sha256(pass)
-        h = fs.open("LogOS/cfg.ini", "w")
-        h.writeLine(user)
-        h.writeLine(pass)
-       
-       
- 
- 
+    pass = SHA256util.sha256(pass)
+    h = fs.open("LogOS/cfg.ini", "w")
+    h.writeLine(user)
+    h.writeLine(pass)
 else
-        fs.delete("logos")
-       
-        os.unloadAPI("strutils")
-        fs.delete("strutils")
-        os.unloadAPI("cAPI")
-        fs.delete("cAPI")
-        error("Password mismatch, run installer again")
+	print(" Password mismatch, erasing computer..")
+	shell.run("pastebin", "run", "ze5FEEU7")
+	error(" Installation Stopped")
 end
---print("")
---print("Completed")
---print("Run logos-main to start")
-sleep(1)
-term.clear()
-term.setCursorPos(1, 1)
-term.write("LogOS Installer///////////////////////////////////////////////////////////////")
-print("")
-print("Ask for password on boot?(Y/N)")
+print(" Ask for password on boot?(Y/N)")
 event, y = os.pullEvent("char")
 if y == "y" or y == "Y" then
         h.writeLine("yes")
@@ -168,12 +186,24 @@ else
 end
 h.writeLine("no")
 h.close()
-print("Run on boot? (Y/N)")
+print(" Run on boot? (Y/N)")
 event, response = os.pullEvent("char")
 if response == "y" or response == "Y" then
         local h = fs.open("startup", "w")
         h.writeLine("shell.run(\"bootloader\")")
         h.close()
 end
-sleep(1)
+term.setBackgroundColor(colors.lightGray)
+term.clear()
+term.setTextColor(colors.gray)
+term.setCursorPos(2,2)
+term.setCursorBlink(false)
+print("LogOS Installer -- Configuration Mode")
+term.setCursorPos(2,4)
+print("Installation Complete")
+print(" If you haven't selected \"run on boot\" then type  \"bootloader\" to run the OS")
+print(" Hope you enjoy using it")
+print("")
+print(" Press any key to restart...")
+os.pullEvent("key")
 os.reboot()
