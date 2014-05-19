@@ -9,6 +9,7 @@ print("Downloading files: ")
 term.setCursorPos(2,10)
 term.setBackgroundColor(colors.lightBlue)
 term.write("                                               ")
+--Main Application
 local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/logos")
 if download1 then
         local handle = download1.readAll()
@@ -75,7 +76,7 @@ local download1 = http.get("http://pastebin.com/raw.php?i=vyAZc6tJ")
 if download1 then
         local handle = download1.readAll()
         download1.close()
-        local file = fs.open("LogOS/LuaIDE", "w")
+        local file = fs.open("Programs/LuaIDE", "w")
         file.write(handle)
         file.close()
 else
@@ -87,7 +88,7 @@ local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/Lo
 if download1 then
         local handle = download1.readAll()
         download1.close()
-        local file = fs.open("LogOS/fileB", "w")
+        local file = fs.open("Programs/fileB", "w")
         file.write(handle)
         file.close()
 else
@@ -99,7 +100,7 @@ local download1 = http.get("https://raw.githubusercontent.com/logsys11/LogOS-Bet
 if download1 then
         local handle = download1.readAll()
         download1.close()
-        local file = fs.open("LogOS/FB/fBk", "w")
+        local file = fs.open("Programs/FB/fBk", "w")
         file.write(handle)
         file.close()
 else
@@ -135,7 +136,7 @@ local download1 = http.get("https://raw.github.com/darkrising/darkprograms/darkp
 if download1 then
         local handle = download1.readAll()
         download1.close()
-        local file = fs.open("LogOS/darkchat", "w")
+        local file = fs.open("Programs/darkchat", "w")
         file.write(handle)
         file.close()
 else

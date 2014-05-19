@@ -12,13 +12,7 @@ function rightClick(xP, yP)
 	event, button, xPos, yPos = oldOsPullEvent("mouse_click")
 	if button == 1 then
 		if xPos >= xP and xPos <= xP+11 and yPos == yP then
-			x, y = term.getSize()
-			local nWindow3 = window.create(term.current(), 1,2,x,y-1, true)
-			term.redirect(nWindow3)
-			
-			shell.run("shell")
-			term.redirect(term.native())
-			nWindow3.setVisible(false)
+			runProg("shell")
 			completeDraw()
 		end
 	else
@@ -90,10 +84,10 @@ local runProg = function(program, ...)
 	nWindow1.setVisible(false)
 end
 local fb = function()
-	runProg("LogOS/fileB")
+	runProg("Programs/fileB")
 end
 local darkchat = function()
-	runProg("LogOS/darkchat", user1, 10, "true")
+	runProg("Programs/darkchat", user1, 10, "true")
 end
 
 local function main()
@@ -124,7 +118,7 @@ local function main()
 			
 				if xP <= 12 and xP >= 1 then
 					if yP == 2 then
-						runProg("LogOS/LuaIDE")
+						runProg("Programs/LuaIDE")
 						printed = false
 					elseif yP == 3 then
 						x, y = term.getSize()
