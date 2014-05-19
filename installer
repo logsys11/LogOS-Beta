@@ -9,7 +9,7 @@ print("Downloading files: ")
 term.setCursorPos(2,10)
 term.setBackgroundColor(colors.lightBlue)
 term.write("                                               ")
-local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/logos")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/logos")
 if download1 then
         local handle = download1.readAll()
         download1.close()
@@ -47,7 +47,7 @@ else
 end
 term.write("    ")
 --print("Downloading background")
-local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/.background")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/.background")
 if download1 then
         local handle = download1.readAll()
         download1.close()
@@ -59,7 +59,7 @@ else
 end
 term.write("    ")
 --print("Downloading bootloader background")
-local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/.bootloader")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/.bootloader")
 if download1 then
         local handle = download1.readAll()
         download1.close()
@@ -83,7 +83,7 @@ else
 end
 term.write("  ")
 --print("Downloading File Browser")
-local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/fileB")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/fileB")
 if download1 then
         local handle = download1.readAll()
         download1.close()
@@ -95,7 +95,7 @@ else
 end
 term.write(" ")
 --print("Downloading File Browser Background")
-local download1 = http.get("https://raw.githubusercontent.com/logsys11/LogOS/master/LogOS%20Files/LogOS/FB/fBk")
+local download1 = http.get("https://raw.githubusercontent.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/FB/fBk")
 if download1 then
         local handle = download1.readAll()
         download1.close()
@@ -107,7 +107,7 @@ else
 end
 term.write(" ")
 --print("Downloading bootloader")
-local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/bootloader")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/bootloader")
 if download1 then
         local handle = download1.readAll()
         download1.close()
@@ -119,7 +119,7 @@ else
 end
 --print("Downloading kernel")
 term.write("          ")
-local download1 = http.get("https://raw.github.com/logsys11/LogOS/master/LogOS%20Files/LogOS/kernel")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/kernel")
 if download1 then
         local handle = download1.readAll()
         download1.close()
