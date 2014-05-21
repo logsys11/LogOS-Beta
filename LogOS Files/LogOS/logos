@@ -176,7 +176,7 @@ local function main()
 		end
 	end
 end
-os.run({},"logos/kernel")
+os.run({},"LogOS/kernel")
 if passOnLogon == "yes" then
 	term.setCursorPos(1,1)
 	print(os.version())
