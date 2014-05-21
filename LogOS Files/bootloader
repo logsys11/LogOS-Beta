@@ -62,11 +62,11 @@ local load = function(sVerbose)
 	if sVerbose then print("Loading Drivers") end
 	--loadDriver()
 	sleep(0.2)
-if sVerbose then sleep(4) end
+	if sVerbose then sleep(4) end
 	loading = false
 	--shell.run("LogOS/.logos")
 	
-	local runOS() = function()
+	local runOS = function()
 		shell.run("LogOS/logos")
 	end
 	myOS = coroutine.create(runOS)

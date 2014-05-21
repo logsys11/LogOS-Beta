@@ -3,14 +3,6 @@ runn = {}
 --convertion
 MB = 1024
 B = 8
---Metatables
-testMt =  {
-	__add(a,b) = function
-		
-	end
-
-
-}
 --functions
 os.loadAPI("LogOS/strutils")
 os.loadAPI("LogOS/SHA256util")
@@ -39,7 +31,7 @@ function rightClick(xP, yP)
 		completeDraw()
 	end
 end
-local passwordAsk = function()
+passwordAsk = function()
 	term.setCursorPos(1,1)
 	print(os.version())
 	os.pullEvent = os.pullEventRaw
@@ -65,7 +57,7 @@ local passwordAsk = function()
 		BSOD("Username Mismatch")
 	end
 end
-local runProg = function(program, ...)
+runProg = function(program, ...)
 	x, y = term.getSize()
 	term.setCursorPos(8,1)
 	term.setBackgroundColor(colors.blue)
