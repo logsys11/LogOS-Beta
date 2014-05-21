@@ -203,13 +203,13 @@ if passOnLogon == "yes" then
 		BSOD("Username Mismatch")
 	end
 	mainCoroutine = coroutine.create(main)
-	local ok, err = coroutine.resume(main)
+	local ok, err = coroutine.resume(mainCoroutine)
 	if not ok then
 		BSOD(err)
 	end
 else
 	mainCoroutine = coroutine.create(main)
-	local ok, err = coroutine.resume(main)
+	local ok, err = coroutine.resume(mainCoroutine)
 	if not ok then
 		BSOD(err)
 	end
