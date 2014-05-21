@@ -61,6 +61,7 @@ _G.os.pullEvent = function( _sFilter )
 		end
 	end
 end
+--[[
 _G.loadfile = function( _sFile )
     local file = fs.open( _sFile, "r", "system" )
     if file then
@@ -80,7 +81,7 @@ _G.dofile = function( _sFile )
         error( e, 2 )
     end
 end
-
+]]
 function _G.drawBar()
 	term.setTextColor(colors.yellow)
 	term.setBackgroundColor(colors.cyan)
