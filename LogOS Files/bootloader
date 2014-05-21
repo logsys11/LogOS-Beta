@@ -23,12 +23,13 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 --Loading Values
 loading = true
 
+
 --Functions
-backgd = function()
+_G.backgd = function()
 	img1 = paintutils.loadImage(".bootloader")
 	paintutils.drawImage(img1, 5, 1)
 end
-wheelSpin = function()
+_G.wheelSpin = function()
 	term.setCursorPos(10,7)
 	local spin = {}
 	spin[1] = "/"
@@ -51,20 +52,19 @@ wheelSpin = function()
 	return "1"
 end
 
-load = function(sVerbose)
+_G.load = function(sVerbose)
 	if sVerbose then print("Loading Kernel") end
 	sleep(1.2)
 	os.run({},"LogOS/kernel")
-	if sVerbose then print("Loading Drivers") end
+	if sVerbose then print("Lo<ding Drivers") end
 	--loadDriver()
 	sleep(0.2)
 	if sVerbose then sleep(4) end
 	loading = false
 	os.run({},"LogOS/logos")
+end
 
-	end
-
-runAll = function()
+_G.runAll = function()
 	term.setBackgroundColor(colors.white)
 	term.setTextColor(colors.gray)
 	term.clear()
@@ -74,21 +74,68 @@ runAll = function()
 end
 
 --Function running area and non-function scripts
-term.clear()
-term.setCursorPos(1,1)
-term.write("Press V to boot in verbose mode")
-os.startTimer(1.5)
-event, key = os.pullEvent()
-if event == "char" or event == "key" then
-	if key == "v" or key == "V" or key == 47 then
-		term.setBackgroundColor(colors.gray)
-		term.setTextColor(colors.white)
-		term.clear()
-		term.setCursorPos(1,1)
-		load(true)
+_G.bootloaderF = function()
+
+	term.clear()
+	term.setCursorPos(1,1)
+	term.write("Press V to boot in verbose mode")
+	os.startTimer(1.5)
+	event, key = os.pullEvent()
+	if event == "char" or event == "key" then
+		if key == "v" or key == "V" or key == 47 then
+			term.setBackgroundColor(colors.gray)
+			term.setTextColor(colors.white)
+			term.clear()
+			term.setCursorPos(1,1)
+			load(true)
+		else
+			runAll()
+		end
 	else
 		runAll()
 	end
-else
-	runAll()
 end
+
+--Top Level Overriding
+if aftertlco then print("Already tlcoed") return end
+ 
+local m = _G.os.shutdown
+local first=false
+function _G.os.shutdown()
+        if first then first=false return end
+        _G.os.shutdown = m
+        _G.aftertlco = true
+        term.redirect(term.native())
+        local ok, err = pcall( function()
+        parallel.waitForAny(
+                function()
+            bootloaderF()
+            os.run( {}, "rom/programs/shutdown" )
+                end,
+                function() os.loadAPI("/rom/apis/rednet") rednet.run() end
+                )
+        end )
+ 
+        -- If the shit errored, let the user read it.
+        term.redirect( term.native() )
+        if not ok then
+                printError( err )
+                pcall( function()
+                        term.setCursorBlink( false )
+                        print( "Press any key to continue" )
+                        os.pullEvent( "key" )
+                end )
+        end
+        os.shutdown()
+end
+ 
+local t = _G.type
+function _G.type(A)
+        if A=="Breakout" then print("Breaking") _G.type=t os.queueEvent("key") error("Breaking",2)
+        else return t(A) end
+end
+ 
+shell.exit()
+os.queueEvent("key")
+os.queueEvent("modem_message", "Breakout", 1, 1, "Breakout" )
+error("Breaking",2)

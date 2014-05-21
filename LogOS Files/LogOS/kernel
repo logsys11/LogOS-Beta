@@ -3,146 +3,11 @@
 --Use with LogOS only!
 --Copyright (C) 2014 João Pacheco a.k.a. logsys
 --Native Read from computercraft 1.63 BIOS
-function read( _sReplaceChar, _tHistory )
-    term.setCursorBlink( true )
-
-    local sLine = ""
-    local nHistoryPos
-    local nPos = 0
-    if _sReplaceChar then
-        _sReplaceChar = string.sub( _sReplaceChar, 1, 1 )
-    end
-    
-    local w = term.getSize()
-    local sx = term.getCursorPos()
-    
-    local function redraw( _sCustomReplaceChar )
-        local nScroll = 0
-        if sx + nPos >= w then
-            nScroll = (sx + nPos) - w
-        end
-
-        local cx,cy = term.getCursorPos()
-        term.setCursorPos( sx, cy )
-        local sReplace = _sCustomReplaceChar or _sReplaceChar
-        if sReplace then
-            term.write( string.rep( sReplace, math.max( string.len(sLine) - nScroll, 0 ) ) )
-        else
-            term.write( string.sub( sLine, nScroll + 1 ) )
-        end
-        term.setCursorPos( sx + nPos - nScroll, cy )
-    end
-    
-    while true do
-        local sEvent, param = os.pullEvent()
-        if sEvent == "char" then
-            -- Typed key
-            sLine = string.sub( sLine, 1, nPos ) .. param .. string.sub( sLine, nPos + 1 )
-            nPos = nPos + 1
-            redraw()
-
-        elseif sEvent == "paste" then
-            -- Pasted text
-            sLine = string.sub( sLine, 1, nPos ) .. param .. string.sub( sLine, nPos + 1 )
-            nPos = nPos + string.len( param )
-            redraw()
-
-        elseif sEvent == "key" then
-            if param == keys.enter then
-                -- Enter
-                break
-                
-            elseif param == keys.left then
-                -- Left
-                if nPos > 0 then
-                    nPos = nPos - 1
-                    redraw()
-                end
-                
-            elseif param == keys.right then
-                -- Right                
-                if nPos < string.len(sLine) then
-                    redraw(" ")
-                    nPos = nPos + 1
-                    redraw()
-                end
-            
-            elseif param == keys.up or param == keys.down then
-                -- Up or down
-                if _tHistory then
-                    redraw(" ")
-                    if param == keys.up then
-                        -- Up
-                        if nHistoryPos == nil then
-                            if #_tHistory > 0 then
-                                nHistoryPos = #_tHistory
-                            end
-                        elseif nHistoryPos > 1 then
-                            nHistoryPos = nHistoryPos - 1
-                        end
-                    else
-                        -- Down
-                        if nHistoryPos == #_tHistory then
-                            nHistoryPos = nil
-                        elseif nHistoryPos ~= nil then
-                            nHistoryPos = nHistoryPos + 1
-                        end                        
-                    end
-                    if nHistoryPos then
-                        sLine = _tHistory[nHistoryPos]
-                        nPos = string.len( sLine ) 
-                    else
-                        sLine = ""
-                        nPos = 0
-                    end
-                    redraw()
-                end
-            elseif param == keys.backspace then
-                -- Backspace
-                if nPos > 0 then
-                    redraw(" ")
-                    sLine = string.sub( sLine, 1, nPos - 1 ) .. string.sub( sLine, nPos + 1 )
-                    nPos = nPos - 1                    
-                    redraw()
-                end
-            elseif param == keys.home then
-                -- Home
-                redraw(" ")
-                nPos = 0
-                redraw()        
-            elseif param == keys.delete then
-                -- Delete
-                if nPos < string.len(sLine) then
-                    redraw(" ")
-                    sLine = string.sub( sLine, 1, nPos ) .. string.sub( sLine, nPos + 2 )                
-                    redraw()
-                end
-            elseif param == keys["end"] then
-                -- End
-                redraw(" ")
-                nPos = string.len(sLine)
-                redraw()
-            end
-
-        elseif sEvent == "term_resize" then
-            -- Terminal resized
-            w = term.getSize()
-            redraw()
-
-        end
-    end
-
-    local cx, cy = term.getCursorPos()
-    term.setCursorBlink( false )
-    term.setCursorPos( w + 1, cy )
-    print()
-    
-    return sLine
-end
 --Semi-Sandbox
 rootDirectory = "/userFiles/"
 rootDirectoryN = "/userFiles"
 old_fsOpen = _G["fs"]["open"]
+--[[
 _G["fs"]["open"] = function(path, mode, _req)
 	req = _req or nil
 	if req == nil then
@@ -159,8 +24,9 @@ _G["fs"]["open"] = function(path, mode, _req)
     	return nil, "Invalid Req"
     end
 end
-
+]]
 old_fsList = _G["fs"]["list"]
+--[[
 _G["fs"]["list"] = function(sPath, _req)
 	req = _req or nil
 	if _req == nil then
@@ -173,11 +39,12 @@ _G["fs"]["list"] = function(sPath, _req)
 		return old_fsList(path)
 	end
 end
+]]
 _G["fs"]["list"] = old_fsList
 _G["fs"]["open"] = old_fsOpen
 --------------------------------
-oldOsPullEvent = os.pullEvent
-os.pullEvent = function( _sFilter )
+_G.oldOsPullEvent = os.pullEvent
+_G.os.pullEvent = function( _sFilter )
 	if _sFilter == "mouse_click" then
 		local event, button,x ,y = oldOsPullEvent( _sFilter )
 		if event == "mouse_click" then
@@ -194,7 +61,7 @@ os.pullEvent = function( _sFilter )
 		end
 	end
 end
-loadfile = function( _sFile )
+_G.loadfile = function( _sFile )
     local file = fs.open( _sFile, "r", "system" )
     if file then
         local func, err = loadstring( file.readAll(), fs.getName( _sFile ) )
@@ -204,7 +71,7 @@ loadfile = function( _sFile )
     return nil, "File not found"
 end
 
-dofile = function( _sFile )
+_G.dofile = function( _sFile )
     local fnFile, e = loadfile( _sFile )
     if fnFile then
         setfenv( fnFile, getfenv(2) )
@@ -214,7 +81,7 @@ dofile = function( _sFile )
     end
 end
 
-function drawBar()
+function _G.drawBar()
 	term.setTextColor(colors.yellow)
 	term.setBackgroundColor(colors.cyan)
 	
@@ -222,19 +89,19 @@ function drawBar()
 	term.write("[Menu]                                                                     ")
 end
 
-function drawBackground()
+function _G.drawBackground()
 	img1 = paintutils.loadImage("LogOS/.background")
 	paintutils.drawImage(img1, 1,2)
 end
 
-function completeDraw()
+function _G.completeDraw()
 	term.setBackgroundColor(colors.white)
 	term.clear()
 	drawBar()
 	drawBackground()
 end
 
-getTaco = function()
+_G.getTaco = function()
 	term.setBackgroundColor(colors.gray)
 	term.setTextColor(colors.white)
 	term.clear()
@@ -255,7 +122,7 @@ getTaco = function()
 		sleep(2)
 	end
 end
-BSOD = function(error)
+_G.BSOD = function(error)
 	--bsod made by logsys..
 	--feel free to use in your programs and edit it, but keep my name in it
 	term.setBackgroundColor(colors.blue)
@@ -276,7 +143,7 @@ BSOD = function(error)
 	os.reboot()
 end
 
-upToDate = function(link)
+_G.upToDate = function(link)
 	if http then
 		local getVer = http.get(link)
 		if getVer then
@@ -294,7 +161,7 @@ upToDate = function(link)
 	end
 end
 
-loadDriver = function()
+_G.loadDriver = function()
 	for k,v in pairs(rs.getSides()) do
 		if peripheral.isPresent(v) then
 			if peripheral.getType(v) == "monitor" then
@@ -321,7 +188,7 @@ loadDriver = function()
 end
 
 --Normal use functions please!
-os.version = function()
+_G.os.version = function()
 	return "LogOS V1.24 - Beta 2"
 end
 
