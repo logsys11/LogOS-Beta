@@ -24,15 +24,11 @@ ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEAL
 loading = true
 
 --Functions
-
-local backgd = function()
+backgd = function()
 	img1 = paintutils.loadImage(".bootloader")
 	paintutils.drawImage(img1, 5, 1)
 end
-
-
-
-local wheelSpin = function()
+wheelSpin = function()
 	term.setCursorPos(10,7)
 	local spin = {}
 	spin[1] = "/"
@@ -55,7 +51,7 @@ local wheelSpin = function()
 	return "1"
 end
 
-local load = function(sVerbose)
+load = function(sVerbose)
 	if sVerbose then print("Loading Kernel") end
 	sleep(1.2)
 	shell.run("LogOS/kernel")
@@ -74,7 +70,7 @@ local load = function(sVerbose)
 	coroutine.resume(myOS)
 end
 
-local runAll = function()
+runAll = function()
 	term.setBackgroundColor(colors.white)
 	term.setTextColor(colors.gray)
 	term.clear()
