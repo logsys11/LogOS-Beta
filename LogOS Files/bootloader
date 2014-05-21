@@ -54,21 +54,15 @@ end
 load = function(sVerbose)
 	if sVerbose then print("Loading Kernel") end
 	sleep(1.2)
-	shell.run("LogOS/kernel")
+	os.run({},"LogOS/kernel")
 	if sVerbose then print("Loading Drivers") end
 	--loadDriver()
 	sleep(0.2)
 	if sVerbose then sleep(4) end
 	loading = false
-	--shell.run("LogOS/.logos")
-	
-	local runOS = function()
-		shell.run("LogOS/logos")
+	os.run({},"LogOS/logos")
+
 	end
-	myOS = coroutine.create(runOS)
-	nCoroutines = 1
-	coroutine.resume(myOS)
-end
 
 runAll = function()
 	term.setBackgroundColor(colors.white)
