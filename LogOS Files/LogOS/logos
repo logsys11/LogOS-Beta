@@ -3,8 +3,28 @@ runn = {}
 --convertion
 MB = 1024
 B = 8
---functions
+--Metatables
+testMt =  {
+	__add(a,b) = function
+		
+	end
 
+
+}
+--functions
+os.loadAPI("LogOS/strutils")
+os.loadAPI("LogOS/SHA256util")
+term.clear()
+term.setBackgroundColor(colors.lightBlue)
+term.setTextColor(1)
+term.setCursorPos(1,1)
+term.clear()
+settingsH = fs.open("LogOS/cfg.ini", "r")
+user1 = settingsH.readLine()
+pass1 = settingsH.readLine()
+passOnLogon = settingsH.readLine()
+tacoI = settingsH.readLine()
+settingsH.close()
 function rightClick(xP, yP)
 	term.setBackgroundColor(colors.lightGray)
 	term.setCursorPos(xP, yP)
@@ -19,24 +39,9 @@ function rightClick(xP, yP)
 		completeDraw()
 	end
 end
-
-os.loadAPI("LogOS/strutils")
-os.loadAPI("LogOS/SHA256util")
---os.loadAPI("cAPI")
-term.clear()
-term.setBackgroundColor(colors.lightBlue)
-term.setTextColor(1)
-term.setCursorPos(1,1)
-term.clear()
-settingsH = fs.open("LogOS/cfg.ini", "r")
-user1 = settingsH.readLine()
-pass1 = settingsH.readLine()
-passOnLogon = settingsH.readLine()
-tacoI = settingsH.readLine()
-settingsH.close()
-term.setCursorPos(1,1)
-print(os.version())
-if passOnLogon == "yes" then
+local passwordAsk = function()
+	term.setCursorPos(1,1)
+	print(os.version())
 	os.pullEvent = os.pullEventRaw
 	term.setCursorPos(2,5)
 	print("Username:")
@@ -52,23 +57,14 @@ if passOnLogon == "yes" then
 	term.setCursorPos(2,8)
 	local pass = read("*")
 	pass = SHA256util.sha256(pass)
-
-	
-	
 	if user1 == user then
 		if pass1 ~= pass then
 			BSOD("Password Mismatch")
-		else
-			--wait
-
 		end
 	else
 		BSOD("Username Mismatch")
 	end
-else
-	--wait... it's down there
 end
-shell.run("logos/kernel")
 local runProg = function(program, ...)
 	x, y = term.getSize()
 	term.setCursorPos(8,1)
@@ -134,17 +130,12 @@ local function main()
 						term.setCursorBlink(true)
 						read1 = read()
 						term.setCursorBlink(false)
-						--if fs.exists(read1) then
 						term.clear()
 						term.setCursorPos(1,1)
 						term.redirect(term.native())
 						nWindow4.setVisible = false
 						printed = false
 						runProg(read1)
-							
-						--else
-							--BSOD("Program not found!")
-						--end
 						term.redirect(term.native())
 						nWindow4.setVisible = false
 						printed = false
@@ -218,9 +209,18 @@ local function main()
 		end
 	end
 end
---ok, it's here
-
-local ok, err = pcall(main)
-if not ok then
-	BSOD(err)
+shell.run("logos/kernel")
+if passOnLogon == "yes" then
+	passwordAsk()
+	mainCoroutine = coroutine.create(main)
+	local ok, err = coroutine.resume(mainCoroutine)
+	if not ok then
+		BSOD(err)
+	end
+else
+	mainCoroutine = coroutine.create(main)
+	local ok, err = coroutine.resume(mainCoroutine)
+	if not ok then
+		BSOD(err)
+	end
 end

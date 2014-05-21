@@ -65,7 +65,13 @@ local load = function(sVerbose)
 if sVerbose then sleep(4) end
 	loading = false
 	--shell.run("LogOS/.logos")
-	shell.run("LogOS/logos")
+	
+	local runOS() = function()
+		shell.run("LogOS/logos")
+	end
+	myOS = coroutine.create(runOS)
+	nCoroutines = 1
+	coroutine.resume(myOS)
 end
 
 local runAll = function()
