@@ -31,32 +31,7 @@ function rightClick(xP, yP)
 		completeDraw()
 	end
 end
-passwordAsk = function()
-	term.setCursorPos(1,1)
-	print(os.version())
-	os.pullEvent = os.pullEventRaw
-	term.setCursorPos(2,5)
-	print("Username:")
-	term.setCursorPos(2,7)
-	print("Password:")
-	term.setCursorPos(2,6)
-	term.setBackgroundColor(colors.blue)
-	write("                    ")
-	term.setCursorPos(2,8)
-	write("                    ")
-	term.setCursorPos(2,6)
-	local user = read()
-	term.setCursorPos(2,8)
-	local pass = read("*")
-	pass = SHA256util.sha256(pass)
-	if user1 == user then
-		if pass1 ~= pass then
-			BSOD("Password Mismatch")
-		end
-	else
-		BSOD("Username Mismatch")
-	end
-end
+
 runProg = function(program, ...)
 	x, y = term.getSize()
 	term.setCursorPos(8,1)
@@ -203,7 +178,30 @@ local function main()
 end
 shell.run("logos/kernel")
 if passOnLogon == "yes" then
-	passwordAsk()
+	term.setCursorPos(1,1)
+	print(os.version())
+	os.pullEvent = os.pullEventRaw
+	term.setCursorPos(2,5)
+	print("Username:")
+	term.setCursorPos(2,7)
+	print("Password:")
+	term.setCursorPos(2,6)
+	term.setBackgroundColor(colors.blue)
+	write("                    ")
+	term.setCursorPos(2,8)
+	write("                    ")
+	term.setCursorPos(2,6)
+	local user = read()
+	term.setCursorPos(2,8)
+	local pass = read("*")
+	pass = SHA256util.sha256(pass)
+	if user1 == user then
+		if pass1 ~= pass then
+			BSOD("Password Mismatch")
+		end
+	else
+		BSOD("Username Mismatch")
+	end
 	mainCoroutine = coroutine.create(main)
 	local ok, err = coroutine.resume(mainCoroutine)
 	if not ok then
