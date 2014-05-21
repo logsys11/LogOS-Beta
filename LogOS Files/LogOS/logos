@@ -42,7 +42,7 @@ runProg = function(program, ...)
 	term.write(program)
 	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow1)
-	shell.run(program, ...)
+	os.run({},program, ...)
 	term.redirect(term.native())
 	nWindow1.setVisible(false)
 end
@@ -176,7 +176,7 @@ local function main()
 		end
 	end
 end
-shell.run("logos/kernel")
+os.run({},"logos/kernel")
 if passOnLogon == "yes" then
 	term.setCursorPos(1,1)
 	print(os.version())
