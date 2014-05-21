@@ -46,13 +46,13 @@ _G["fs"]["open"] = old_fsOpen
 _G.oldOsPullEvent = os.pullEvent
 _G.os.pullEvent = function( _sFilter )
 	if _sFilter == "mouse_click" then
-		local event, button,x ,y = oldOsPullEvent( _sFilter )
+		event, button,x ,y = oldOsPullEvent( _sFilter )
 		if event == "mouse_click" then
 			y = y - 1
 			return event, button, x, y
 		end
 	else
-		local event, a1, a2, a3, a4 , a5, a6 = oldOsPullEvent( _sFilter )
+		event, a1, a2, a3, a4 , a5, a6 = oldOsPullEvent( _sFilter )
 		if event == "mouse_click" then
 			a3 = a3 - 1
 			return event, a1, a2, a3, a4, a5, a6
@@ -190,6 +190,6 @@ end
 
 --Normal use functions please!
 _G.os.version = function()
-	return "LogOS V1.24 - Beta 2"
+	return "LogOS V1.24 - Beta 3"
 end
 
