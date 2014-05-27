@@ -44,15 +44,16 @@ _G["fs"]["list"] = old_fsList
 _G["fs"]["open"] = old_fsOpen
 --------------------------------
 _G.oldOsPullEvent = os.pullEvent
+_G.oldOsPullEventRaw  = os.pullEventRaw
 _G.os.pullEvent = function( _sFilter )
 	if _sFilter == "mouse_click" then
-		event, button,x ,y = oldOsPullEvent( _sFilter )
+		event, button, x ,y = coroutine.yield( _sFilter )
 		if event == "mouse_click" then
 			y = y - 1
 			return event, button, x, y
 		end
 	else
-		event, a1, a2, a3, a4 , a5, a6 = oldOsPullEvent( _sFilter )
+		event, a1, a2, a3, a4 , a5, a6 = coroutine.yield( _sFilter )
 		if event == "mouse_click" then
 			a3 = a3 - 1
 			return event, a1, a2, a3, a4, a5, a6

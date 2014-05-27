@@ -40,26 +40,26 @@ runProg = function(program, ...)
 	term.write("          ")
 	term.setCursorPos(8,1)
 	term.write(program)
-	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
+	 nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow1)
 	os.run({},program, ...)
 	term.redirect(term.native())
 	nWindow1.setVisible(false)
 end
-local fb = function()
+ fb = function()
 	runProg("Programs/fileB")
 end
-local darkchat = function()
+ darkchat = function()
 	runProg("Programs/darkchat", user1, 10, "true")
 end
 
-local function main()
+ function main()
 	completeDraw()
 	printed = false
 	term.setCursorBlink(false)
 	while true do
 
-		local event, button, xP, yP = oldOsPullEvent("mouse_click")
+		 event, button, xP, yP = oldOsPullEvent("mouse_click")
 		
 		if button == 1 then
 			if printed == false then
@@ -85,7 +85,7 @@ local function main()
 						printed = false
 					elseif yP == 3 then
 						x, y = term.getSize()
-						local nWindow4 = window.create(term.current(),1,2,x,y-1)
+						 nWindow4 = window.create(term.current(),1,2,x,y-1)
 						term.redirect(nWindow4)
 						term.clear()
 						term.setBackgroundColor(colors.lightBlue)
