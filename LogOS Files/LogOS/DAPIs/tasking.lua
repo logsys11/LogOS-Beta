@@ -13,8 +13,14 @@ function runProc(proc)
 	term.redirect(nWindow)
 	while true do
 		event,arg1, arg2, arg3, arg4, arg5, arg6 = coroutine.resume(proc.coroutine)
-		if coroutine.status(proc.coroutine) == "dead" then proc = nil term.redirect(term.native()) nWindow.setVisible(false) nWindow = nil return "Terminated" end
-		event, arg1, arg2, arg3, arg4, arg5, arg6 = os.pullEventRaw(event)
+		if coroutine.status(proc.coroutine) == "dead" then
+			proc = nil
+			term.redirect(term.native())
+			nWindow.setVisible(false)
+			nWindow = nil
+			return "Terminated"
+		end
+		event, arg1, arg2, arg3, arg4, arg5, arg6 = os.pullEventRaw(event or "mouse_click")
 		if event == "mouse_click" then
 			if arg3 == "-1" then
 				--getStatusBar()
