@@ -3,7 +3,7 @@ nProc = 0
 function createProc(dir)
 	proc = {}
 	proc.name = fs.getName(dir)
-	proc.coroutine = coroutine.create(shell.run(dir))
+	proc.coroutine = coroutine.create(os.run({},dir))
 	return proc
 end
 
