@@ -75,11 +75,12 @@ else
 	--wait... it's down there
 end
 shell.run("logos/kernel")
+shell.run("LogOS/DAPIs/tasking.lua")
 local lIDE = function()
 	x, y = term.getSize()
 	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow1)
-	shell.run("LuaIDE")
+	shell.run("Programs/LuaIDE")
 	term.redirect(term.native())
 	nWindow1.setVisible(false)
 end
@@ -87,7 +88,7 @@ local fb = function()
 	x, y = term.getSize()
 	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow1)
-	shell.run("LogOS/fileB")
+	shell.run("Programs/fileB")
 	term.redirect(term.native())
 	nWindow1.setVisible(false)
 end
@@ -95,7 +96,7 @@ local darkchat = function()
 	x, y = term.getSize()
 	local nWindow2 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow2)
-	shell.run("LogOS/darkchat", user1, 10, "true")
+	shell.run("Programs/darkchat", user1, 10, "true")
 	term.redirect(term.native())
 	nWindow2.setVisible(false)
 	completeDraw()
@@ -158,7 +159,7 @@ local function main()
 						printed = false
 					elseif yP == 4 then
 						--darkchat()
-						darkProc = createProc("LogOS/darkchat")
+						darkProc = createProc("Programs/darkchat")
 						runProc(darkProc)
 						printed = false
 						completeDraw()

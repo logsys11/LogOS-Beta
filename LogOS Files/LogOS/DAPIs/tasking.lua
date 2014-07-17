@@ -1,30 +1,25 @@
 procList = {}
 nProc = 0
-x,y = term.getSize()
 function createProc(dir)
 	proc = {}
-	nProc = nProc + 1
-	--procList[nProc] = {}
-	proc.run = loadfile(dir)
 	proc.name = fs.getName(dir)
-	proc.func = loadstring(run)
-	proc.coroutine = coroutine.create(proc.func, ...)
+	proc.coroutine = coroutine.create(shell.run(dir))
 	return proc
 end
 
 function runProc(proc)
+	x,y = term.getSize()
 	nWindow = window.create(term.native(),1,2,x,y-1,true)
 	term.redirect(nWindow)
 	while true do
 		event,arg1, arg2, arg3, arg4, arg5, arg6 = coroutine.resume(proc.coroutine)
-		if coroutine.status(proc.coroutine) == "dead" then proc = nil nWindow.setVisible(false) nWindow = nil return "Terminated" end
+		if coroutine.status(proc.coroutine) == "dead" then proc = nil term.redirect(term.native()) nWindow.setVisible(false) nWindow = nil return "Terminated" end
 		event, arg1, arg2, arg3, arg4, arg5, arg6 = os.pullEventRaw(event)
 		if event == "mouse_click" then
 			if arg3 == "-1" then
 				--getStatusBar()
 				--Terminate for now
-				proc = nil
-				return "Terminated"
+				proc = nil term.redirect(term.native()) nWindow.setVisible(false) nWindow = nil return "Terminated"
 			end
 		end
 	end
