@@ -2,12 +2,11 @@
 --Initial Release
 --Use with LogOS only!
 --Copyright (C) 2014 João Pacheco a.k.a. logsys
---Native Read from computercraft 1.63 BIOS
+
 --Semi-Sandbox
 rootDirectory = "/userFiles/"
 rootDirectoryN = "/userFiles"
 old_fsOpen = _G["fs"]["open"]
---[[
 _G["fs"]["open"] = function(path, mode, _req)
 	req = _req or nil
 	if req == nil then
@@ -24,9 +23,8 @@ _G["fs"]["open"] = function(path, mode, _req)
     	return nil, "Invalid Req"
     end
 end
-]]
+
 old_fsList = _G["fs"]["list"]
---[[
 _G["fs"]["list"] = function(sPath, _req)
 	req = _req or nil
 	if _req == nil then
@@ -39,21 +37,19 @@ _G["fs"]["list"] = function(sPath, _req)
 		return old_fsList(path)
 	end
 end
-]]
 _G["fs"]["list"] = old_fsList
 _G["fs"]["open"] = old_fsOpen
 --------------------------------
-_G.oldOsPullEvent = os.pullEvent
-_G.oldOsPullEventRaw  = os.pullEventRaw
-_G.os.pullEvent = function( _sFilter )
+oldOsPullEvent = os.pullEvent
+os.pullEvent = function( _sFilter )
 	if _sFilter == "mouse_click" then
-		event, button, x ,y = coroutine.yield( _sFilter )
+		local event, button,x ,y = oldOsPullEvent( _sFilter )
 		if event == "mouse_click" then
 			y = y - 1
 			return event, button, x, y
 		end
 	else
-		event, a1, a2, a3, a4 , a5, a6 = coroutine.yield( _sFilter )
+		local event, a1, a2, a3, a4 , a5, a6 = oldOsPullEvent( _sFilter )
 		if event == "mouse_click" then
 			a3 = a3 - 1
 			return event, a1, a2, a3, a4, a5, a6
@@ -62,8 +58,7 @@ _G.os.pullEvent = function( _sFilter )
 		end
 	end
 end
---[[
-_G.loadfile = function( _sFile )
+loadfile = function( _sFile )
     local file = fs.open( _sFile, "r", "system" )
     if file then
         local func, err = loadstring( file.readAll(), fs.getName( _sFile ) )
@@ -73,7 +68,7 @@ _G.loadfile = function( _sFile )
     return nil, "File not found"
 end
 
-_G.dofile = function( _sFile )
+dofile = function( _sFile )
     local fnFile, e = loadfile( _sFile )
     if fnFile then
         setfenv( fnFile, getfenv(2) )
@@ -82,8 +77,8 @@ _G.dofile = function( _sFile )
         error( e, 2 )
     end
 end
-]]
-function _G.drawBar()
+
+function drawBar()
 	term.setTextColor(colors.yellow)
 	term.setBackgroundColor(colors.cyan)
 	
@@ -91,19 +86,19 @@ function _G.drawBar()
 	term.write("[Menu]                                                                     ")
 end
 
-function _G.drawBackground()
+function drawBackground()
 	img1 = paintutils.loadImage("LogOS/.background")
 	paintutils.drawImage(img1, 1,2)
 end
 
-function _G.completeDraw()
+function completeDraw()
 	term.setBackgroundColor(colors.white)
 	term.clear()
 	drawBar()
 	drawBackground()
 end
 
-_G.getTaco = function()
+getTaco = function()
 	term.setBackgroundColor(colors.gray)
 	term.setTextColor(colors.white)
 	term.clear()
@@ -124,7 +119,12 @@ _G.getTaco = function()
 		sleep(2)
 	end
 end
-_G.BSOD = function(error)
+
+getCurrentVer = function()
+	return "1.2.1"
+end
+
+BSOD = function(error)
 	--bsod made by logsys..
 	--feel free to use in your programs and edit it, but keep my name in it
 	term.setBackgroundColor(colors.blue)
@@ -145,7 +145,7 @@ _G.BSOD = function(error)
 	os.reboot()
 end
 
-_G.upToDate = function(link)
+upToDate = function(link)
 	if http then
 		local getVer = http.get(link)
 		if getVer then
@@ -163,7 +163,7 @@ _G.upToDate = function(link)
 	end
 end
 
-_G.loadDriver = function()
+loadDriver = function()
 	for k,v in pairs(rs.getSides()) do
 		if peripheral.isPresent(v) then
 			if peripheral.getType(v) == "monitor" then
@@ -190,7 +190,7 @@ _G.loadDriver = function()
 end
 
 --Normal use functions please!
-_G.os.version = function()
-	return "LogOS V1.24 - Beta 3"
+os.version = function()
+	return "LogOS V1.23"
 end
 

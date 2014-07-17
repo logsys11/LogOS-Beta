@@ -4,8 +4,31 @@ runn = {}
 MB = 1024
 B = 8
 --functions
+
+function rightClick(xP, yP)
+	term.setBackgroundColor(colors.lightGray)
+	term.setCursorPos(xP, yP)
+	term.write("Access Shell")
+	event, button, xPos, yPos = oldOsPullEvent("mouse_click")
+	if button == 1 then
+		if xPos >= xP and xPos <= xP+11 and yPos == yP then
+			x, y = term.getSize()
+			local nWindow3 = window.create(term.current(), 1,2,x,y-1, true)
+			term.redirect(nWindow3)
+			
+			shell.run("shell")
+			term.redirect(term.native())
+			nWindow3.setVisible(false)
+			completeDraw()
+		end
+	else
+		completeDraw()
+	end
+end
+shell.run("LogOS/DAPIs/tasking.lua")
 os.loadAPI("LogOS/strutils")
 os.loadAPI("LogOS/SHA256util")
+--os.loadAPI("cAPI")
 term.clear()
 term.setBackgroundColor(colors.lightBlue)
 term.setTextColor(1)
@@ -17,49 +40,74 @@ pass1 = settingsH.readLine()
 passOnLogon = settingsH.readLine()
 tacoI = settingsH.readLine()
 settingsH.close()
-function rightClick(xP, yP)
-	term.setBackgroundColor(colors.lightGray)
-	term.setCursorPos(xP, yP)
-	term.write("Access Shell")
-	event, button, xPos, yPos = oldOsPullEvent("mouse_click")
-	if button == 1 then
-		if xPos >= xP and xPos <= xP+11 and yPos == yP then
-			runProg("shell")
-			completeDraw()
+term.setCursorPos(1,1)
+print(os.version())
+if passOnLogon == "yes" then
+	os.pullEvent = os.pullEventRaw
+	term.setCursorPos(2,5)
+	print("Username:")
+	term.setCursorPos(2,7)
+	print("Password:")
+	term.setCursorPos(2,6)
+	term.setBackgroundColor(colors.blue)
+	write("                    ")
+	term.setCursorPos(2,8)
+	write("                    ")
+	term.setCursorPos(2,6)
+	local user = read()
+	term.setCursorPos(2,8)
+	local pass = read("*")
+	pass = SHA256util.sha256(pass)
+
+	
+	
+	if user1 == user then
+		if pass1 ~= pass then
+			BSOD("Password Mismatch")
+		else
+			--wait
+
 		end
 	else
-		completeDraw()
+		BSOD("Username Mismatch")
 	end
+else
+	--wait... it's down there
 end
-
-runProg = function(program, ...)
+shell.run("logos/kernel")
+local lIDE = function()
 	x, y = term.getSize()
-	term.setCursorPos(8,1)
-	term.setBackgroundColor(colors.blue)
-	term.setTextColor(colors.white)
-	term.write("          ")
-	term.setCursorPos(8,1)
-	term.write(program)
-	 nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
+	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
 	term.redirect(nWindow1)
-	os.run({},program, ...)
+	shell.run("LuaIDE")
 	term.redirect(term.native())
 	nWindow1.setVisible(false)
 end
- fb = function()
-	runProg("Programs/fileB")
+local fb = function()
+	x, y = term.getSize()
+	local nWindow1 = window.create(term.current(), 1,2,x,y-1, true)
+	term.redirect(nWindow1)
+	shell.run("LogOS/fileB")
+	term.redirect(term.native())
+	nWindow1.setVisible(false)
 end
- darkchat = function()
-	runProg("Programs/darkchat", user1, 10, "true")
+local darkchat = function()
+	x, y = term.getSize()
+	local nWindow2 = window.create(term.current(), 1,2,x,y-1, true)
+	term.redirect(nWindow2)
+	shell.run("LogOS/darkchat", user1, 10, "true")
+	term.redirect(term.native())
+	nWindow2.setVisible(false)
+	completeDraw()
 end
 
- function main()
+local function main()
 	completeDraw()
 	printed = false
 	term.setCursorBlink(false)
 	while true do
 
-		 event, button, xP, yP = oldOsPullEvent("mouse_click")
+		local event, button, xP, yP = oldOsPullEvent("mouse_click")
 		
 		if button == 1 then
 			if printed == false then
@@ -81,11 +129,11 @@ end
 			
 				if xP <= 12 and xP >= 1 then
 					if yP == 2 then
-						runProg("Programs/LuaIDE")
+						lIDE()
 						printed = false
 					elseif yP == 3 then
 						x, y = term.getSize()
-						 nWindow4 = window.create(term.current(),1,2,x,y-1)
+						local nWindow4 = window.create(term.current(),1,2,x,y-1)
 						term.redirect(nWindow4)
 						term.clear()
 						term.setBackgroundColor(colors.lightBlue)
@@ -97,17 +145,21 @@ end
 						term.setCursorBlink(true)
 						read1 = read()
 						term.setCursorBlink(false)
-						term.clear()
-						term.setCursorPos(1,1)
-						term.redirect(term.native())
-						nWindow4.setVisible = false
-						printed = false
-						runProg(read1)
+						--if fs.exists(read1) then
+							term.clear()
+							term.setCursorPos(1,1)
+							shell.run(read1)
+							
+						--else
+							--BSOD("Program not found!")
+						--end
 						term.redirect(term.native())
 						nWindow4.setVisible = false
 						printed = false
 					elseif yP == 4 then
-						darkchat()
+						--darkchat()
+						darkProc = createProc("LogOS/darkchat")
+						runProc(darkProc)
 						printed = false
 						completeDraw()
 					elseif yP == 5 then
@@ -176,41 +228,9 @@ end
 		end
 	end
 end
-os.run({},"LogOS/kernel")
-if passOnLogon == "yes" then
-	term.setCursorPos(1,1)
-	print(os.version())
-	os.pullEvent = os.pullEventRaw
-	term.setCursorPos(2,5)
-	print("Username:")
-	term.setCursorPos(2,7)
-	print("Password:")
-	term.setCursorPos(2,6)
-	term.setBackgroundColor(colors.blue)
-	write("                             ")
-	term.setCursorPos(2,8)
-	write("                             ")
-	term.setCursorPos(2,6)
-	local user = read()
-	term.setCursorPos(2,8)
-	local pass = read("*")
-	pass = SHA256util.sha256(pass)
-	if user1 == user then
-		if pass1 ~= pass then
-			BSOD("Password Mismatch")
-		end
-	else
-		BSOD("Username Mismatch")
-	end
-	mainCoroutine = coroutine.create(main)
-	local ok, err = coroutine.resume(mainCoroutine)
-	if not ok then
-		BSOD(err)
-	end
-else
-	mainCoroutine = coroutine.create(main)
-	local ok, err = coroutine.resume(mainCoroutine)
-	if not ok then
-		BSOD(err)
-	end
+--ok, it's here
+
+local ok, err = pcall(main)
+if not ok then
+	BSOD(err)
 end

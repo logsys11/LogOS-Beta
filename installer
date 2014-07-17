@@ -107,6 +107,17 @@ else
         error("Could not download File Browser Background")
 end
 term.write(" ")
+local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/DAPIs/tasking.lua")
+if download1 then
+        local handle = download1.readAll()
+        download1.close()
+        local file = fs.open("LogOS/DAPIs/tasking.lua", "w")
+        file.write(handle)
+        file.close()
+else
+        error("Could not download multitasking file")
+end
+term.write("   ")
 --print("Downloading bootloader")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/bootloader")
 if download1 then
@@ -119,7 +130,7 @@ else
         error("Could not download bootloader")
 end
 --print("Downloading kernel")
-term.write("          ")
+term.write("       ")
 local download1 = http.get("https://raw.github.com/logsys11/LogOS-Beta/master/LogOS%20Files/LogOS/kernel")
 if download1 then
         local handle = download1.readAll()
