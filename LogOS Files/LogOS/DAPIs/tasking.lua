@@ -1,5 +1,3 @@
-procList = {}
-nProc = 0
 function createProc(dir)
 	proc = {}
 	proc.name = fs.getName(dir)
