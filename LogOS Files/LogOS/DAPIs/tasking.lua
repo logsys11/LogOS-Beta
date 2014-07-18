@@ -14,6 +14,7 @@ function runProc(proc)
 	while true do
 		event,arg1, arg2, arg3, arg4, arg5, arg6 = coroutine.resume(proc.coroutine)
 		if coroutine.status(proc.coroutine) == "dead" then
+			if not event then print(arg1) sleep(1.2) end
 			proc = nil
 			term.redirect(term.native())
 			nWindow.setVisible(false)

@@ -164,7 +164,9 @@ local function main()
 						printed = false
 						completeDraw()
 					elseif yP == 5 then
-						fb()
+						--fb()
+						fbProc = createProc("Programs/fileB")
+						runProc(fbProc)
 						printed = false
 						completeDraw()
 					elseif yP == 6 then
