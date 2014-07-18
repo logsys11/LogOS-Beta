@@ -34,7 +34,9 @@ function runProc(proc)
 		end
 		if terminated == true then terminated = false break end
 		lot = true
+		eventData = eventData or {}
 		sFilter, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
 	end
+	terminated = false
 	return nil
 end
