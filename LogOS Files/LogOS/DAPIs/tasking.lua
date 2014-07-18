@@ -3,7 +3,7 @@ nProc = 0
 function createProc(dir)
 	proc = {}
 	proc.name = fs.getName(dir)
-	proc.coroutine = coroutine.create(os.run({},dir))
+	proc.coroutine = coroutine.create(loadfile(dir))
 	return proc
 end
 
@@ -20,7 +20,7 @@ function runProc(proc)
 			nWindow = nil
 			return "Terminated"
 		end
-		event, arg1, arg2, arg3, arg4, arg5, arg6 = os.pullEventRaw(event or "mouse_click")
+		event, arg1, arg2, arg3, arg4, arg5, arg6 = os.pullEventRaw(event)
 		if event == "mouse_click" then
 			if arg3 == "-1" then
 				--getStatusBar()

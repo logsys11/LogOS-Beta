@@ -39,7 +39,7 @@ _G["fs"]["list"] = function(sPath, _req)
 end
 _G["fs"]["list"] = old_fsList
 _G["fs"]["open"] = old_fsOpen
---------------------------------
+
 oldOsPullEvent = os.pullEvent
 os.pullEvent = function( _sFilter )
 	if _sFilter == "mouse_click" then
@@ -58,6 +58,7 @@ os.pullEvent = function( _sFilter )
 		end
 	end
 end
+--[[
 loadfile = function( _sFile )
     local file = fs.open( _sFile, "r", "system" )
     if file then
@@ -77,7 +78,7 @@ dofile = function( _sFile )
         error( e, 2 )
     end
 end
-
+]]
 function drawBar()
 	term.setTextColor(colors.yellow)
 	term.setBackgroundColor(colors.cyan)
