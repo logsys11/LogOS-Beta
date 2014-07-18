@@ -15,20 +15,20 @@ function runProc(proc)
 	x,y = term.getSize()
 	nWindow = window.create(term.native(),1,2,x,y-1,true)
 	term.redirect(nWindow)
-	sFilter, arg1 = coroutine.resume(proc.coroutine)
+	check, _sFilter, arg1 = coroutine.resume(proc.coroutine)
 	while true do
 		if coroutine.status(proc.coroutine) == "dead" then
-			if not sFilter then term.setBackgroundColor(colors.black) print(arg1) sleep(1.2) end
+			if not check then term.setBackgroundColor(colors.black) print(_sFilter) sleep(1.2) end
 			terminateProc(proc)
 			break
 		end
-		local eventData = { os.pullEventRaw( sFilter ) }
+		local eventData = { os.pullEventRaw( _sFilter ) }
 	    if eventData[1] == "terminate" then
 	        terminateProc(proc)
 	        break
 	    end
-	    if eventData[1] == "mouse_click" then if eventData[4] == 1 then terminateProc(proc) break end end
-		sFilter, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
+	    --if eventData[1] == "mouse_click" then if eventData[4] == 1 then terminateProc(proc) break end end
+		check, _sFilter, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
 	end
 	terminated = false
 	return nil

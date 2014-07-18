@@ -130,7 +130,8 @@ local function main()
 			
 				if xP <= 12 and xP >= 1 then
 					if yP == 2 then
-						lIDE()
+						lIDE = createProc("Programs/luaide")
+						runProc(lIDE)
 						printed = false
 					elseif yP == 3 then
 						x, y = term.getSize()
