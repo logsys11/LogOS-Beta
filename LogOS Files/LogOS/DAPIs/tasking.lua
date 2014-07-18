@@ -4,7 +4,6 @@ function createProc(dir)
 	proc.coroutine = coroutine.create(loadfile(dir))
 	return proc
 end
-
 function runProc(proc)
 	local function terminateProc(proc)
 		proc = nil
@@ -23,14 +22,17 @@ function runProc(proc)
 			terminateProc(proc)
 			break
 		end
-		
-		local eventData = { os.pullEventRaw( sFilter ) }
-	    if eventData[1] == "terminate" then
-	        terminateProc(proc)
-	        break
-	    end
-	    if eventData[1] == "mouse_click" and eventData[4] == "-1" then terminateProc(proc) break end
-		event, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
+		while lot do
+			local eventData = { os.pullEventRaw( ) }
+		    if eventData[1] == "terminate" then
+		        terminateProc(proc)
+		        break
+		    end
+		    if eventData[1] == "mouse_click" then if eventData[4] == 0 then terminateProc(proc) break end end
+		    if eventData[1] == sFilter then lot = false end
+		end
+		lot = true
+		sFilter, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
 	end
 	return nil
 end
