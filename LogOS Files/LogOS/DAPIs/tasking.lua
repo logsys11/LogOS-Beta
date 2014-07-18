@@ -10,7 +10,6 @@ function runProc(proc)
 		term.redirect(term.native())
 		nWindow.setVisible(false)
 		nWindow = nil
-		terminated = true
 	end
 
 	x,y = term.getSize()
@@ -23,18 +22,12 @@ function runProc(proc)
 			terminateProc(proc)
 			break
 		end
-		while lot do
-			local eventData = { os.pullEventRaw( ) }
-		    if eventData[1] == "terminate" then
-		        terminateProc(proc)
-		        break
-		    end
-		    if eventData[1] == "mouse_click" then if eventData[4] == 1 then terminateProc(proc) terminated = true break end end
-		    if eventData[1] == sFilter then lot = false end
-		end
-		if terminated == true then terminated = false break end
-		lot = true
-		eventData = eventData or {}
+		local eventData = { os.pullEventRaw( sFilter ) }
+	    if eventData[1] == "terminate" then
+	        terminateProc(proc)
+	        break
+	    end
+	    if eventData[1] == "mouse_click" then if eventData[4] == 1 then terminateProc(proc) break end end
 		sFilter, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
 	end
 	terminated = false
