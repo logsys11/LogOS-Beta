@@ -8,29 +8,31 @@ function createProc(dir)
 end
 
 function runProc(proc)
+	local function terminateProc(proc)
+		proc = nil
+		term.redirect(term.native())
+		nWindow.setVisible(false)
+		nWindow = nil
+	end
+
 	x,y = term.getSize()
 	nWindow = window.create(term.native(),1,2,x,y-1,true)
 	term.redirect(nWindow)
-	event, arg1 = coroutine.resume(proc.coroutine)
+	sFilter, arg1 = coroutine.resume(proc.coroutine)
 	while true do
 		if coroutine.status(proc.coroutine) == "dead" then
-			if not event then term.setBackgroundColor(colors.black) print(arg1) sleep(1.2) end
-			proc = nil
-			term.redirect(term.native())
-			nWindow.setVisible(false)
-			nWindow = nil
+			if not sFilter then term.setBackgroundColor(colors.black) print(arg1) sleep(1.2) end
+			terminateProc(proc)
 			break
 		end
-		event, arg1, arg2, arg3, arg4, arg5, arg6 = os.pullEvent(event)
-		if event == "mouse_click" then
-			if arg3 == "-1" then
-				--getStatusBar()
-				--Terminate for now
-				proc = nil term.redirect(term.native()) nWindow.setVisible(false) nWindow = nil break
-			end
-
-		end
-		event, arg1 = coroutine.resume(proc.coroutine, arg1,arg2,arg3,arg4,arg5,arg6)
+		
+		local eventData = { os.pullEventRaw( sFilter ) }
+	    if eventData[1] == "terminate" then
+	        terminateProc(proc)
+	        break
+	    end
+	    if eventData[1] == "mouse_click" and eventData[4] == "-1" then terminateProc(proc) break end
+		event, arg1 = coroutine.resume(proc.coroutine, unpack(eventData))
 	end
 	return nil
 end

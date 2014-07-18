@@ -3,7 +3,7 @@ currentPath = "/"
 local function printBackground()
 	term.setBackgroundColor(colors.white)
 	term.clear()
-	local bkg = paintutils.loadImage("/LogOS/FB/fBk")
+	local bkg = paintutils.loadImage("/Programs/FB/fBk")
 	paintutils.drawImage(bkg, 1,1)
 	term.setCursorPos(1,1)
 	term.setBackgroundColor(colors.red)
