@@ -42,8 +42,9 @@ tacoI = settingsH.readLine()
 settingsH.close()
 term.setCursorPos(1,1)
 print("LogOS V1.24 - Beta 2")
+os.pullEvent = os.pullEventRaw
 if passOnLogon == "yes" then
-	os.pullEvent = os.pullEventRaw
+	
 	term.setCursorPos(2,5)
 	print("Username:")
 	term.setCursorPos(2,7)
