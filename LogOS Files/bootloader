@@ -50,6 +50,8 @@ function bootMenu()
 	print("2) Reset all settings")
 	term.setCursorPos(10,6)
 	print("3) Use CraftOS")
+	term.setCursorPos(10,7)
+	print("4) Format Computer")
 	while true do
 		event, key = os.pullEvent("key")
 		if key == 2 then
@@ -66,6 +68,9 @@ function bootMenu()
 				return true
 			end
 			if runShell() then os.shutdown() end
+		elseif key == 5 then
+			shell.run("rm *")
+			os.reboot()
 		end
 	end
 end
