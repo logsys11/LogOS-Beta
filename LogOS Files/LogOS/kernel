@@ -1,4 +1,4 @@
---Kernel V.1.0.0.12
+--Kernel V.1.1.0.225
 --Initial Release
 --Use with LogOS only!
 --Copyright (C) 2014 João Pacheco a.k.a. logsys
@@ -42,6 +42,10 @@ _G["fs"]["open"] = old_fsOpen
 
 oldOsPullEvent = os.pullEvent
 os.pullEvent = function( _sFilter )
+	if _sFilter == "resetLogOS" then
+		_G.os.pullEvent = oldOsPullEvent
+		return _sFilter, true
+	end
 	if _sFilter == "mouse_click" then
 		local event, button,x ,y = oldOsPullEvent( _sFilter )
 		if event == "mouse_click" then
@@ -192,6 +196,9 @@ end
 
 --Normal use functions please!
 os.version = function()
-	return "LogOS V1.24 - Beta 1"
+	return "LogOS V1.24 - Beta 2"
 end
 
+kernel.version = function()
+	return "1.1.0.225"
+end

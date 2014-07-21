@@ -18,19 +18,201 @@ WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEM
 COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
 ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 --]]
-
+kernel = {}
 --All rights reserved
 --Loading Values
 loading = true
-
+--51,19
 --Functions
+--Normal use functions please!
+os.version = function()
+	return "LogOS V1.24 - Beta 1"
+end
 
+kernel.version = function()
+	return "V1.0.0.12"
+end
 local backgd = function()
 	img1 = paintutils.loadImage(".bootloader")
 	paintutils.drawImage(img1, 5, 1)
 end
 
+function bootMenu()
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.lightGray)
+	term.clear()
+	term.setCursorPos(1,1)
+	print(os.version())
+	print("Secure Area")
+	term.setCursorPos(10,4)
+	print("1) Restart")
+	term.setCursorPos(10,5)
+	print("2) Reset all settings")
+	term.setCursorPos(10,6)
+	print("3) Use CraftOS")
+	while true do
+		event, key = os.pullEvent("key")
+		if key == 2 then
+			os.reboot()
+		elseif key == 3 then
+			resetSettings()
+		elseif key == 4 then
+			local function runShell()
+				term.setBackgroundColor(colors.black)
+				term.clear()
+				term.setCursorPos(1,1)
+				os.pullEvent("resetLogOs")
+				shell.run("shell")
+				return true
+			end
+			if runShell() then os.shutdown() end
+		end
+	end
+end
+BSOD = function(error)
+	--bsod made by logsys..
+	--feel free to use in your programs and edit it, but keep my name in it
+	term.setBackgroundColor(colors.blue)
+	term.setTextColor(colors.white)
+	term.clear()
+	term.setCursorPos(1,1)
+	print("An error has occurred and the computer has to shutdown.")
+	print("")
+	print("The error is:")
+	print(error)
+	print("")
+	print("If you modified this program, revert it to the default program")
+	print("")
+	print("")
+	print("")
+	print("Memory dump progress: 100%")
+	sleep(5)
+	os.reboot()
+end
 
+function resetSettings()
+	term.setBackgroundColor(colors.white)
+	term.setTextColor(colors.lightGray)
+	term.clear()
+	term.setCursorPos(1,1)
+	print(os.version())
+	term.setTextColor(colors.red)
+	print("This area requires you to login... Please, insert your data below:")
+	term.setTextColor(colors.lightBlue)
+	write("Username: ")
+	username = read()
+	print("")
+	write("Password: ")
+	password = read("*")
+	os.loadAPI("LogOS/SHA256util")
+	password = SHA256util.sha256(password)
+	settingsH = fs.open("LogOS/cfg.ini", "r")
+	user1 = settingsH.readLine()
+	pass1 = settingsH.readLine()
+	passOnLogon = settingsH.readLine()
+	tacoI = settingsH.readLine()
+	settingsH.close()
+	if user1 == username and pass1 == password then
+		term.setBackgroundColor(colors.white)
+		term.clear()
+		term.setCursorPos(1,1)
+		term.setTextColor(colors.lightGray)
+		print(os.version())
+		term.setTextColor(colors.lime)
+		print("Access allowed! Enter the new info now:")
+		term.setTextColor(colors.lightBlue)
+		write("Username: ")
+		username = read()
+		print("")
+		write("Password: ")
+		password = read("*")
+		password = SHA256util.sha256(password)
+		settingsH = fs.open("LogOS/cfg.ini", "w")
+		settingsH.writeLine(username)
+		settingsH.writeLine(password)
+		print("")
+		print(" Ask for password on boot?(Y/N)")
+		event, y = os.pullEvent("char")
+		if y == "y" or y == "Y" then
+		        settingsH.writeLine("yes")
+		else
+		        settingsH.writeLine("no")
+		end
+		settingsH.writeLine("no")
+		settingsH.close()
+		term.setBackgroundColor(colors.white)
+		term.setTextColor(colors.lightGray)
+		term.clear()
+		term.setCursorPos(1,1)
+		print(os.version())
+		term.setTextColor(colors.black)
+		print("Complete.. Restarting in 2 seconds")
+		sleep(2)
+		os.shutdown()
+	else
+		BSOD("Wrong username/password")
+	end
+end
+local bootAnime = function()
+
+	term.setTextColor(colors.lightGray)
+	term.clear()
+	term.setCursorPos(1,1)
+	term.setBackgroundColor(colors.black)
+	term.clear()
+	sleep(0.04)
+	term.setBackgroundColor(colors.gray)
+	term.clear()
+	sleep(0.04)
+	term.setBackgroundColor(colors.lightGray)
+	term.clear()
+	sleep(0.04)
+	term.setBackgroundColor(colors.white)
+	term.clear()
+	term.setBackgroundColor(colors.gray)
+	--[[
+	term.setCursorPos(10,4)
+	term.write("      ")
+	term.setCursorPos(10,5)
+	term.write("  ")
+	term.setCursorPos(14,5)
+	term.write("    ")
+	term.setCursorPos(10,6)
+	term.write("")]]
+	loadImg = paintutils.loadImage("simbol")
+	paintutils.drawImage(loadImg, 1,1)
+	term.setCursorPos(20,4)
+	term.setBackgroundColor(colors.white)
+	print(os.version())
+	term.setCursorPos(20,5)
+	print("Kernel " .. kernel.version())
+	term.setCursorPos(20,6)
+	print("By logsys")
+	term.setCursorPos(5,19)
+	print("Hold SHIFT for boot options")
+	term.setCursorPos(5,17)
+	term.setBackgroundColor(colors.lightGray)
+	print("                                          ")
+	term.setBackgroundColor(colors.gray)
+	shell.run("LogOS/kernel")
+	sleep(0.5)
+	term.setCursorPos(5,17)
+	term.write("                     ")
+	shell.run("LogOS/DAPIs/tasking.lua")
+	sleep(0.2)
+	term.write("                     ")
+	os.startTimer(1.1)
+	event, timer = os.pullEvent()
+	if event == "key" then
+		if timer == 42 then
+			bootMenu()
+		else
+			shell.run("LogOS/logos")
+		end
+	else
+		shell.run("LogOS/logos")
+	end
+end
 
 local wheelSpin = function()
 	term.setCursorPos(10,7)
@@ -76,7 +258,7 @@ local runAll = function()
 	parallel.waitForAll(wheelSpin(),load())
 	
 end
-
+--[[
 --Function running area and non-function scripts
 term.clear()
 term.setCursorPos(1,1)
@@ -96,3 +278,6 @@ if event == "char" or event == "key" then
 else
 	runAll()
 end
+]]
+
+bootAnime()
