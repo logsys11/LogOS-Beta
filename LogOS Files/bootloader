@@ -184,7 +184,7 @@ local bootAnime = function()
 	term.write("    ")
 	term.setCursorPos(10,6)
 	term.write("")]]
-	loadImg = paintutils.loadImage("simbol")
+	loadImg = paintutils.loadImage(".bootloader")
 	paintutils.drawImage(loadImg, 1,1)
 	term.setCursorPos(20,4)
 	term.setBackgroundColor(colors.white)
