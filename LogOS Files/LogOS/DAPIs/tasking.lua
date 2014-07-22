@@ -1,7 +1,7 @@
 function createProc(dir)
 	proc = {}
 	proc.name = fs.getName(dir)
-	proc.coroutine = coroutine.create(loadfile(dir))
+	proc.coroutine = coroutine.create(function () shell.run(dir) end)
 	return proc
 end
 function runProc(proc)
